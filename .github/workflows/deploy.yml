@@ -33,7 +33,7 @@ jobs:
         run: elm make src/Main.elm --optimize --output=dist/main.js
 
       - name: Assemble site
-        run: cp index.html dist/index.html
+        run: cp index.html style.css dist/
 
       - uses: actions/upload-pages-artifact@v3
         with:

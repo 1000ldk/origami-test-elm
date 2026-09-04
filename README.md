@@ -1,22 +1,6 @@
 # origami-test-elm
 
-[origami-elm](https://github.com/1000ldk/origami-elm)（Elm コードの依存構造から折り紙の展開図を生成する Swift 製ツール）向けの、素材となる小さな Elm アプリケーションです。
-
-このアプリ自体は、鶴の折り方ステップを SVG でぱらぱら表示するだけの簡易ビューアですが、モジュールを分割して意味のある依存関係ツリーを持たせてあります。
-
-```
-Main
-├── Model
-│   └── Steps
-│       └── Geometry
-├── Update
-│   └── Model
-│       └── ...
-└── View
-    ├── Model
-    ├── Steps
-    └── Geometry
-```
+コーヒー豆(品種・産地・焙煎度・抽出方法)の基礎知識をまとめた、簡単な Elm 製ウェブサイトです。
 
 ## セットアップ
 
@@ -24,7 +8,7 @@ Main
 npm install -g elm
 ```
 
-## 実行（開発サーバー）
+## 開発サーバーで実行
 
 ```sh
 elm reactor
@@ -38,13 +22,13 @@ elm reactor
 elm make src/Main.elm --output=main.js
 ```
 
-生成された `main.js` を `index.html` と同じディレクトリに置いてブラウザで `index.html` を開くと動作します。
+生成された `main.js` を `index.html` / `style.css` と同じディレクトリに置き、`index.html` をブラウザで開くと動作します。
 
-## 内容
+`main` ブランチへの push では GitHub Actions (`.github/workflows/deploy.yml`) が自動でビルドし、GitHub Pages が有効(Source: GitHub Actions)であれば自動で公開されます。
 
-- `src/Geometry.elm` — 2D 座標のユーティリティ（中点・拡大縮小・平行移動）
-- `src/Steps.elm` — 折り方ステップ（多角形の頂点と折り線）の定義
-- `src/Model.elm` — アプリの状態とメッセージ型
-- `src/Update.elm` — 状態更新ロジック
-- `src/View.elm` — SVG で折り紙の各ステップを描画する View
-- `src/Main.elm` — エントリポイント（`Browser.sandbox`）
+## 構成
+
+- `src/Data.elm` — コーヒー豆に関するデータ(品種・産地・焙煎度・抽出方法)
+- `src/Main.elm` — タブ切り替えで各カテゴリを表示するアプリ本体(`Browser.sandbox`)
+- `style.css` — 見た目のスタイル
+- `index.html` — エントリポイント
