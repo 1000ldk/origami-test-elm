@@ -223,9 +223,49 @@ body {
     font-size: 0.9rem;
 }
 
-.note {
+/* 参考資料 */
+
+.sources {
     margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+}
+
+.sources__heading {
+    margin: 0 0 0.4rem;
+    font-size: 0.95rem;
+    color: var(--accent);
+}
+
+.sources__note {
+    margin: 0 0 0.7rem;
     color: var(--ink-faint);
     font-size: 0.8rem;
     line-height: 1.6;
+}
+
+.sources__list {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.82rem;
+    line-height: 1.8;
+}
+
+.sources__list a {
+    color: var(--accent);
+}
+
+.sources__list li {
+    color: var(--ink-faint);
+}
+
+.note {
+    margin-top: 2rem;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.note__line {
+    margin: 0 0 0.35rem;
 }

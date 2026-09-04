@@ -47,6 +47,7 @@ src/
     Item.elm                  カード1件。id の正規化と検索対象の定義
     Category.elm              章の一覧・見出し・導入文
     Catalog.elm               データモジュールを束ねる唯一の入口
+    Reference.elm             参考資料と、それが対応する章
     Validation.elm            カタログの不変条件の検査
     Data/                     データ本体(章ごとに1ファイル)
       Varieties.elm
@@ -60,12 +61,14 @@ src/
     Tabs.elm                  章の切り替え
     SearchBox.elm             絞り込み入力
     Card.elm                  カード1枚
+    Sources.elm               その章の参考資料一覧
     Problems.elm              データ検証の警告バナー
 tests/
   RangeTest.elm
   SlugTest.elm
   ItemTest.elm
   CatalogTest.elm
+  ReferenceTest.elm
 ```
 
 ### 設計の意図
@@ -83,11 +86,40 @@ tests/
 1. `Coffee/Data/` にデータモジュールを追加
 2. `Coffee.Category` に構築子を足す — `label` / `intro` / `slug` の分岐漏れはコンパイラが指摘します
 3. `Coffee.Category.all` と `Coffee.Catalog.itemsFor` に繋ぐ
+4. `Coffee.Reference` にその章の出典を足す — 忘れると `ReferenceTest` が落ちます
 
 ## デプロイ
 
 `main` ブランチへの push で GitHub Actions がフォーマット検査・テスト・ビルドを実行し、すべて通れば GitHub Pages に公開します(Pages の Source が「GitHub Actions」である必要があります)。
 
-## 出典・注意
+## 出典と著作権
+
+### 掲載内容について
+
+**本サイトの文章はすべて書き下ろしで、参考資料からの転載はありません。** 産地の標高、フレーバー表現、抽出レシピの数値は複数の資料を調べたうえで、自分の言葉で記述しています。
+
+参考にした資料は `src/Coffee/Reference.elm` に章との対応付きで持っており、サイト上でも開いている章の直下に一覧表示されます。`Coffee.Validation` と `tests/ReferenceTest.elm` が「出典の無い章」を検出するので、根拠を辿れない事実が載ることはありません。
+
+法的な整理は次の通りです。
+
+- **事実データに著作権は及びません。** 「キリマンジャロ山の標高は5,895m」「V60 の湯温は90〜93℃」といった事実そのものは著作物ではないため、利用に制限はありません(著作権法第10条第2項および創作性の要件)。
+- **表現は転載していません。** 各資料の文章表現・構成・図表は一切利用していないため、翻案権・複製権の問題は生じません。
+- **Wikipedia (CC BY-SA) について。** 出典に Wikipedia を含みますが、本文を利用していないため CC BY-SA の継承(ShareAlike)義務は発生しません。事実確認にのみ使用しています。
+- **画像・ロゴは使用していません。** 外部リソースの読み込みもありません。
+
+出典の明記は、法的な義務としてではなく、数値の根拠を読者が検証できるようにするために行っています。
+
+### ライセンス
+
+本リポジトリは [MIT License](LICENSE) です(コード・文章とも)。
+
+依存パッケージのライセンスは以下の通りで、いずれも MIT と併用できます。
+
+| パッケージ | ライセンス |
+| --- | --- |
+| `elm/core`, `elm/browser`, `elm/html` ほか `elm/*` | BSD-3-Clause |
+| `elm-explorations/test` | BSD-3-Clause |
+
+### 注意
 
 産地の標高やレシピの数値は一般に紹介されている目安で、農園やロット、焙煎度によって最適値は変わります。出発点として扱ってください。

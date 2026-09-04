@@ -15,6 +15,7 @@ module Coffee.Validation exposing (Problem, describe, problems)
 import Coffee.Catalog as Catalog
 import Coffee.Category as Category exposing (Category)
 import Coffee.Item exposing (Item)
+import Coffee.Reference as Reference exposing (Reference)
 import Coffee.Slug as Slug
 
 
@@ -25,6 +26,9 @@ type Problem
     | BlankField String String
     | NoFacts String
     | EmptyCategory Category
+    | BlankReferenceField String String
+    | InsecureReferenceUrl String
+    | UncitedCategory Category
 
 
 {-| カタログ全体の検査結果。健全なら空リスト。
@@ -35,6 +39,8 @@ problems =
         [ duplicateIds
         , List.concatMap itemProblems Catalog.allItems
         , List.filterMap emptyCategory Category.all
+        , List.concatMap referenceProblems Reference.all
+        , List.filterMap uncitedCategory Category.all
         ]
 
 
@@ -54,6 +60,15 @@ describe problem =
 
         EmptyCategory category ->
             "カテゴリ " ++ Category.label category ++ " に項目がありません"
+
+        BlankReferenceField title field ->
+            "出典 " ++ title ++ " の " ++ field ++ " が空です"
+
+        InsecureReferenceUrl title ->
+            "出典 " ++ title ++ " の url が https:// で始まっていません"
+
+        UncitedCategory category ->
+            "カテゴリ " ++ Category.label category ++ " に出典がありません"
 
 
 duplicateIds : List Problem
@@ -126,6 +141,48 @@ emptyCategory : Category -> Maybe Problem
 emptyCategory category =
     if List.isEmpty (Catalog.itemsFor category) then
         Just (EmptyCategory category)
+
+    else
+        Nothing
+
+
+referenceProblems : Reference -> List Problem
+referenceProblems reference =
+    let
+        key =
+            if String.isEmpty (String.trim reference.title) then
+                reference.url
+
+            else
+                reference.title
+    in
+    List.filterMap identity
+        [ blankReference key "title" reference.title
+        , blankReference key "publisher" reference.publisher
+        , blankReference key "url" reference.url
+        , if String.startsWith "https://" reference.url then
+            Nothing
+
+          else
+            Just (InsecureReferenceUrl key)
+        ]
+
+
+blankReference : String -> String -> String -> Maybe Problem
+blankReference key field value =
+    if String.isEmpty (String.trim value) then
+        Just (BlankReferenceField key field)
+
+    else
+        Nothing
+
+
+{-| 出典の無い章。事実を載せている以上、根拠を辿れない章があってはならない。
+-}
+uncitedCategory : Category -> Maybe Problem
+uncitedCategory category =
+    if List.isEmpty (Reference.forCategory category) then
+        Just (UncitedCategory category)
 
     else
         Nothing

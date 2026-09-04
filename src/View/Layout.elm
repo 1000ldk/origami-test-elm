@@ -17,6 +17,7 @@ type alias Config msg =
     , controls : List (Html msg)
     , intro : String
     , cards : List (Html msg)
+    , sources : Html msg
     }
 
 
@@ -32,7 +33,11 @@ view config =
         , div [ class "controls" ] config.controls
         , p [ class "intro" ] [ text config.intro ]
         , main_ [ class "cards" ] (cardsOrEmpty config.cards)
-        , footer [ class "note" ] [ text disclaimer ]
+        , config.sources
+        , footer [ class "note" ]
+            [ p [ class "note__line" ] [ text disclaimer ]
+            , p [ class "note__line" ] [ text copyright ]
+            ]
         ]
 
 
@@ -53,3 +58,8 @@ title =
 disclaimer : String
 disclaimer =
     "※ 標高やレシピの数値は一般的な目安です。農園やロット、焙煎度によって最適値は変わるので、出発点として使ってください。"
+
+
+copyright : String
+copyright =
+    "© 2026 chiba ryohei — 本サイトの文章は書き下ろしです。参考資料は各章に明記しています。"

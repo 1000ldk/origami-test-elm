@@ -13,12 +13,14 @@ import App.State as State exposing (Model, Msg(..))
 import Browser
 import Coffee.Catalog as Catalog
 import Coffee.Category as Category
+import Coffee.Reference as Reference
 import Coffee.Validation as Validation
 import Html exposing (Html)
 import View.Card
 import View.Layout
 import View.Problems
 import View.SearchBox
+import View.Sources
 import View.Tabs
 
 
@@ -53,6 +55,7 @@ view model =
             ]
         , intro = Category.intro model.active
         , cards = List.map View.Card.view (State.visibleItems model)
+        , sources = View.Sources.view (Reference.forCategory model.active)
         }
 
 
