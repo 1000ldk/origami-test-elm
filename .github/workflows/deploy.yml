@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "claude/**"
+  pull_request:
   workflow_dispatch: {}
 
 permissions:
@@ -16,7 +17,34 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  ELM_VERSION: 0.19.1-6
+  ELM_TEST_VERSION: 0.19.2-1
+  ELM_FORMAT_VERSION: 0.8.8
+
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install tooling
+        run: |
+          npm install -g \
+            elm@${{ env.ELM_VERSION }} \
+            elm-test@${{ env.ELM_TEST_VERSION }} \
+            elm-format@${{ env.ELM_FORMAT_VERSION }}
+
+      - name: Check formatting
+        run: elm-format --validate src/ tests/
+
+      - name: Run tests
+        run: elm-test
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +55,7 @@ jobs:
           node-version: 20
 
       - name: Install Elm
-        run: npm install -g elm@0.19.1-6
+        run: npm install -g elm@${{ env.ELM_VERSION }}
 
       - name: Compile
         run: elm make src/Main.elm --optimize --output=dist/main.js
@@ -40,7 +68,7 @@ jobs:
           path: dist
 
   deploy:
-    needs: build
+    needs: [check, build]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:

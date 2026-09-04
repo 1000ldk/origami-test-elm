@@ -1,3 +1,17 @@
+:root {
+    --paper: #fff;
+    --ground: #f5efe6;
+    --ink: #3b2a20;
+    --ink-soft: #6b5744;
+    --ink-faint: #8a7563;
+    --accent: #6b4a2b;
+    --accent-soft: #a5744a;
+    --line: #e5d7c3;
+    --line-strong: #c9a877;
+    --warn: #a3372c;
+    --warn-ground: #fbecea;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -5,8 +19,8 @@
 body {
     margin: 0;
     font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
-    background: #f5efe6;
-    color: #3b2a20;
+    background: var(--ground);
+    color: var(--ink);
 }
 
 .page {
@@ -15,45 +29,132 @@ body {
     padding: 2.5rem 1.5rem 4rem;
 }
 
-h1 {
+.page__header h1 {
     font-size: 2rem;
-    margin-bottom: 0.25rem;
+    margin: 0 0 0.25rem;
 }
 
 .lead {
-    color: #6b5744;
-    margin-top: 0;
+    color: var(--ink-soft);
+    margin: 0;
     line-height: 1.7;
 }
+
+.controls {
+    margin: 1.5rem 0 1.25rem;
+}
+
+/* タブ */
 
 .tabs {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin: 1.5rem 0 1rem;
 }
 
 .tab {
-    border: 1px solid #c9a877;
-    background: #fff;
-    color: #6b4a2b;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--accent);
     padding: 0.5rem 1.1rem;
     border-radius: 999px;
     cursor: pointer;
     font-size: 0.95rem;
+    font-family: inherit;
 }
 
 .tab--active {
-    background: #6b4a2b;
-    color: #fff;
-    border-color: #6b4a2b;
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
 }
+
+.tab--empty {
+    opacity: 0.45;
+}
+
+.tab__badge {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 0 0.35em;
+    border-radius: 999px;
+    background: rgba(107, 74, 43, 0.12);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.tab--active .tab__badge {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* 検索 */
+
+.search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+}
+
+.search__input {
+    flex: 1 1 18rem;
+    min-width: 0;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.search__clear {
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--accent);
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+}
+
+.search__status {
+    margin: 0;
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+}
+
+/* データ検証の警告 */
+
+.problems {
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--warn);
+    border-radius: 8px;
+    background: var(--warn-ground);
+    color: var(--warn);
+    font-size: 0.85rem;
+}
+
+.problems__list {
+    margin: 0.5rem 0 0;
+    padding-left: 1.2rem;
+    line-height: 1.6;
+}
+
+/* 導入文とカード */
 
 .intro {
     margin: 0 0 1.5rem;
     padding-left: 0.85rem;
-    border-left: 3px solid #c9a877;
-    color: #6b5744;
+    border-left: 3px solid var(--line-strong);
+    color: var(--ink-soft);
     font-size: 0.92rem;
     line-height: 1.7;
 }
@@ -66,26 +167,27 @@ h1 {
 }
 
 .card {
-    background: #fff;
-    border: 1px solid #e5d7c3;
+    background: var(--paper);
+    border: 1px solid var(--line);
     border-radius: 10px;
     padding: 1.1rem 1.25rem;
     box-shadow: 0 1px 2px rgba(59, 42, 32, 0.06);
+    scroll-margin-top: 1rem;
 }
 
-.card h2 {
+.card__name {
     margin: 0 0 0.15rem;
     font-size: 1.1rem;
 }
 
-.card h3 {
+.card__subtitle {
     margin: 0 0 0.5rem;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #a5744a;
+    color: var(--accent-soft);
 }
 
-.card p {
+.card__body {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.7;
@@ -97,24 +199,33 @@ h1 {
     gap: 0.3rem 0.75rem;
     margin: 0.9rem 0 0;
     padding-top: 0.8rem;
-    border-top: 1px dashed #e5d7c3;
+    border-top: 1px dashed var(--line);
     font-size: 0.82rem;
     line-height: 1.5;
 }
 
-.facts dt {
-    color: #a5744a;
+.facts__label {
+    color: var(--accent-soft);
     white-space: nowrap;
 }
 
-.facts dd {
+.facts__value {
     margin: 0;
     color: #5a4436;
 }
 
+.empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 2rem 0;
+    color: var(--ink-faint);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
 .note {
     margin-top: 2.5rem;
-    color: #8a7563;
+    color: var(--ink-faint);
     font-size: 0.8rem;
     line-height: 1.6;
 }
