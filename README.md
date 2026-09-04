@@ -5,10 +5,10 @@
 ## セットアップ
 
 ```sh
-npm install -g elm@0.19.1-6 elm-test@0.19.2-1 elm-format@0.8.8
+npm install -g elm@0.19.1-6 elm-test@0.19.1-revision17 elm-format@0.8.8
 ```
 
-バージョンは CI (`.github/workflows/deploy.yml`) と揃えています。
+バージョンは CI (`.github/workflows/deploy.yml`) と揃えています。`elm-test` は npm の `latest` が Elm 0.19.2 向けなので、0.19.1 系を明示的に指定する必要があります。
 
 ## ローカルで動かす
 
