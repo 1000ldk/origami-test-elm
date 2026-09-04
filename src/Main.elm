@@ -1,64 +1,66 @@
 module Main exposing (main)
 
+{-| 配線だけを持つ入口。
+
+状態は [`App.State`](App-State)、見た目は `View.*`、データは `Coffee.*` にある。
+このモジュールが太り始めたら、切り出す場所を間違えているサイン。
+
+@docs main
+
+-}
+
+import App.State as State exposing (Model, Msg(..))
 import Browser
-import Data exposing (Category, Item)
-import Html exposing (Html, article, button, div, h1, h2, h3, main_, nav, p, text)
-import Html.Attributes exposing (class, classList)
-import Html.Events exposing (onClick)
+import Coffee.Catalog as Catalog
+import Coffee.Category as Category
+import Coffee.Reference as Reference
+import Coffee.Validation as Validation
+import Html exposing (Html)
+import View.Card
+import View.Layout
+import View.Problems
+import View.SearchBox
+import View.Sources
+import View.Tabs
 
 
-type alias Model =
-    { active : Category }
-
-
-type Msg
-    = SetCategory Category
-
-
-init : Model
-init =
-    { active = Data.Varieties }
-
-
-update : Msg -> Model -> Model
-update msg _ =
-    case msg of
-        SetCategory category ->
-            { active = category }
+{-| エントリポイント。
+-}
+main : Program () Model Msg
+main =
+    Browser.sandbox
+        { init = State.init
+        , update = State.update
+        , view = view
+        }
 
 
 view : Model -> Html Msg
 view model =
-    div [ class "page" ]
-        [ h1 [] [ text "コーヒー豆まとめ" ]
-        , p [ class "lead" ] [ text "品種・産地・焙煎度・抽出方法別に、コーヒー豆の基礎知識をまとめました。" ]
-        , nav [ class "tabs" ] (List.map (tabButton model.active) Data.categories)
-        , main_ [ class "cards" ] (List.map itemCard (Data.itemsFor model.active))
-        ]
-
-
-tabButton : Category -> Category -> Html Msg
-tabButton active category =
-    button
-        [ classList [ ( "tab", True ), ( "tab--active", category == active ) ]
-        , onClick (SetCategory category)
-        ]
-        [ text (Data.categoryLabel category) ]
-
-
-itemCard : Item -> Html Msg
-itemCard item =
-    article [ class "card" ]
-        [ h2 [] [ text item.name ]
-        , h3 [] [ text item.subtitle ]
-        , p [] [ text item.description ]
-        ]
-
-
-main : Program () Model Msg
-main =
-    Browser.sandbox
-        { init = init
-        , update = update
-        , view = view
+    View.Layout.view
+        { lead = lead
+        , controls =
+            [ View.Tabs.view
+                { active = model.active
+                , count = State.matchCount model
+                , onSelect = SelectCategory
+                }
+            , View.SearchBox.view
+                { query = model.query
+                , resultCount = List.length (State.visibleItems model)
+                , onChange = SetQuery
+                , onClear = ClearQuery
+                }
+            , View.Problems.view Validation.problems
+            ]
+        , intro = Category.intro model.active
+        , cards = List.map View.Card.view (State.visibleItems model)
+        , sources = View.Sources.view (Reference.forCategory model.active)
         }
+
+
+lead : String
+lead =
+    "品種・産地の山・精製方法・焙煎度・抽出方法まで、全"
+        ++ String.fromInt Catalog.size
+        ++ "項目。産地カードには山と標高を、抽出カードには挽き目・湯温・比率の目安を載せています。"
